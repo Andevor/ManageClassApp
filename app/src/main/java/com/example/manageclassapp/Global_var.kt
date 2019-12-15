@@ -60,7 +60,7 @@ class Globals {
 
         fun selectStudent(source: Activity): Cursor {
             val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
-            val query = "SELECT * FROM Students WHERE class=${Globals.selectedClassId}"
+            val query = "SELECT * FROM Students WHERE class=$selectedClassId"
             return database.rawQuery(query, null)
         }
 
@@ -103,6 +103,17 @@ class Globals {
             statement.execute()
         }
 
+        fun insertClass(source: Activity, selectedClassName: String, selectedSubName: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sqlQuery = "INSERT INTO Classes (id, name, subject) VALUES (?, ?, ?)"
+            val statement = database.compileStatement(sqlQuery)
+            statement.bindString(1, (actClassIndex + 1).toString())
+            actClassIndex += 1
+            statement.bindString(2, selectedClassName)
+            statement.bindString(3, selectedSubName)
+            statement.execute()
+        }
+
         fun selectGradesFromStudents(source: Activity, id: String?): Cursor {
             val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
             return database.rawQuery(
@@ -129,6 +140,20 @@ class Globals {
             statement.execute()
         }
 
+        fun insertStudent(source: Activity, studName: String, birth: String, mother: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sqlQuery =
+                "INSERT INTO Students (id, name, birth, mother, class) VALUES (?, ?, ?, ?, ?)"
+            val statement = database.compileStatement(sqlQuery)
+            statement.bindString(1, (actStudIndex + 1).toString())
+            actStudIndex += 1
+            statement.bindString(2, studName)
+            statement.bindString(3, birth)
+            statement.bindString(4, mother)
+            statement.bindString(5, selectedClassId)
+            statement.execute()
+        }
+
         fun selectGradeFromGrades(source: Activity, id: String?): Cursor {
             val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
             return database.rawQuery(
@@ -152,6 +177,19 @@ class Globals {
             val sql = "DELETE FROM Grades WHERE id = ?"
             val statement = database.compileStatement(sql)
             statement.bindString(1, id)
+            statement.execute()
+        }
+
+        fun insertGrade(source: Activity, titleName: String, mark: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sqlQuery =
+                "INSERT INTO Grades (id, title, mark, student) VALUES (?, ?, ?, ?)"
+            val statement = database.compileStatement(sqlQuery)
+            statement.bindString(1, (actGradeIndex + 1).toString())
+            actGradeIndex += 1
+            statement.bindString(2, titleName)
+            statement.bindString(3, mark)
+            statement.bindString(4, selectedStudentId)
             statement.execute()
         }
     }

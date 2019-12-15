@@ -1,16 +1,10 @@
 package com.example.manageclassapp
 
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_modify_class.*
-import kotlinx.android.synthetic.main.activity_modify_class.rb_net
-import kotlinx.android.synthetic.main.activity_modify_class.rb_office
-import kotlinx.android.synthetic.main.activity_modify_class.rb_prog
-import kotlinx.android.synthetic.main.activity_modify_class.subjectGroup
-import java.lang.Exception
 
 class ModifyClassActivity : AppCompatActivity() {
 

@@ -1,12 +1,10 @@
 package com.example.manageclassapp
 
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_add_new_student.*
-import java.lang.Exception
 
 class AddNewStudentActivity : AppCompatActivity() {
 
@@ -17,30 +15,17 @@ class AddNewStudentActivity : AppCompatActivity() {
 
     fun save(view: View) {
         try {
-            val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
-            val sqlQuery =
-                "INSERT INTO Students (id, name, birth, mother, class) VALUES (?, ?, ?, ?, ?)"
-            val statement = database.compileStatement(sqlQuery)
             val studName: String = StudentName.text.toString()
             val birth: String = DateofBirth.text.toString()
             val mother: String = MotherName.text.toString()
-            statement.bindString(1, (Globals.actStudIndex + 1).toString())
-            Globals.actStudIndex = Globals.actStudIndex + 1
-            statement.bindString(2, studName)
-            statement.bindString(3, birth)
-            statement.bindString(4, mother)
-            statement.bindString(5, Globals.selectedClassId)
 
-            var checkExist = "SELECT * FROM Students"
-
-            checkExist += " WHERE name = \"$studName\" AND birth = \"$birth\" AND mother = \"$mother\""
-            val cursor = database.rawQuery(checkExist, null)
+            val cursor = Globals.selectIdStudent(this, studName, mother, birth)
             var redundant = false
             if (cursor.count != 0) {
                 redundant = true
             }
             if (StudentName.text.toString() != "" && DateofBirth.text.toString() != "" && MotherName.text.toString() != "" && !redundant) {
-                statement.execute()
+                Globals.insertStudent(this, studName, birth, mother)
             } else {
                 Globals.actStudIndex -= 1
             }
