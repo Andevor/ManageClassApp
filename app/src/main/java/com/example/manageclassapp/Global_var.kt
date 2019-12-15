@@ -45,6 +45,7 @@ class Globals {
             actGradeIndex = maxGrade.getInt(maxGrade.getColumnIndex("maxed"))
             maxGrade.close()
         }
+
         fun selectClass(source: Activity): Cursor {
             val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
             return database.rawQuery("SELECT * FROM Classes", null)
@@ -74,6 +75,84 @@ class Globals {
             val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
             val gradeq = "SELECT * FROM Grades WHERE student=\"$selectedStudentId\""
             return database.rawQuery(gradeq, null)
+        }
+
+        fun selectStudentsFromClass(source: Activity, id: String?): Cursor {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            return database.rawQuery(
+                "SELECT * FROM Classes WHERE id = \"${id}\"",
+                null
+            )
+        }
+
+        fun updateClass(source: Activity, name: String, selectedSubName: String, id: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sql = "UPDATE Classes SET name = ?, subject = ? WHERE id = ?"
+            val statement = database.compileStatement(sql)
+            statement.bindString(1, name)
+            statement.bindString(2, selectedSubName)
+            statement.bindString(3, id)
+            statement.execute()
+        }
+
+        fun deleteClass(source: Activity, id: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sql = "DELETE FROM Classes WHERE id = ?"
+            val statement = database.compileStatement(sql)
+            statement.bindString(1, id)
+            statement.execute()
+        }
+
+        fun selectGradesFromStudents(source: Activity, id: String?): Cursor {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            return database.rawQuery(
+                "SELECT * FROM Students WHERE id = \"${id}\"",
+                null)
+        }
+
+        fun updateStudent(source: Activity, studName: String, mother: String, birth: String, id: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sql = "UPDATE Students SET name = ?, mother = ?, birth = ? WHERE id = ?"
+            val statement = database.compileStatement(sql)
+            statement.bindString(1, studName)
+            statement.bindString(2, mother)
+            statement.bindString(3, birth)
+            statement.bindString(4, id)
+            statement.execute()
+        }
+
+        fun deleteStudent(source: Activity, id: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sql = "DELETE FROM Students WHERE id = ?"
+            val statement = database.compileStatement(sql)
+            statement.bindString(1, id)
+            statement.execute()
+        }
+
+        fun selectGradeFromGrades(source: Activity, id: String?): Cursor {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            return database.rawQuery(
+                "SELECT * FROM Grades WHERE id = \"$id\"",
+                null
+            )
+        }
+
+        fun updateGrade (source: Activity, title: String, mark: String, id: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sql = "UPDATE Grades SET title = ?, mark = ? WHERE id = ?"
+            val statement = database.compileStatement(sql)
+            statement.bindString(1, title)
+            statement.bindString(2, mark)
+            statement.bindString(3, id)
+            statement.execute()
+        }
+
+        fun deleteGrade(source: Activity, id: String) {
+            val database = source.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
+            val sql = "DELETE FROM Grades WHERE id = ?"
+            val statement = database.compileStatement(sql)
+            statement.bindString(1, id)
+            statement.execute()
         }
     }
 }

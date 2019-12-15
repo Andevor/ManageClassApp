@@ -18,11 +18,7 @@ class ModifyGradeActivity : AppCompatActivity() {
 
         val intent = intent
         gid = intent.getStringExtra("id")
-        val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
-        val x = database.rawQuery(
-            "SELECT * FROM Grades WHERE id = \"$gid\"",
-            null
-        )
+        val x = Globals.selectGradeFromGrades(this, gid)
         x.moveToFirst()
         ngradeTitle.setText(x.getString(x.getColumnIndex("title")))
         ngradeMark.setText(x.getString(x.getColumnIndex("mark")))
@@ -31,17 +27,11 @@ class ModifyGradeActivity : AppCompatActivity() {
 
     fun modify(view: View) {
         try {
-            val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
             val title: String = ngradeTitle.text.toString()
             val mark: String = ngradeMark.text.toString()
-            val sql = "UPDATE Grades SET title = ?, mark = ? WHERE id = ?"
-            val statement = database.compileStatement(sql)
-            statement.bindString(1, title)
-            statement.bindString(2, mark)
-            statement.bindString(3, gid.toString())
 
             if (ngradeTitle.text.toString() != "" && ngradeMark.text.toString() != "") {
-                statement.execute()
+                Globals.updateGrade(this, title, mark, gid.toString())
             }
             val intent = Intent(applicationContext, GradeListerActivity::class.java)
             startActivity(intent)
@@ -52,11 +42,7 @@ class ModifyGradeActivity : AppCompatActivity() {
 
     fun delete(view: View) {
         try {
-            val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
-            val sql = "DELETE FROM Grades WHERE id = ?"
-            val statement = database.compileStatement(sql)
-            statement.bindString(1, gid.toString())
-            statement.execute()
+            Globals.deleteGrade(this, gid.toString())
         } catch (e: Exception) {
             e.printStackTrace()
         }

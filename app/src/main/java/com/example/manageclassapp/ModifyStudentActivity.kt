@@ -14,12 +14,8 @@ class ModifyStudentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modify_student)
-        val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
         val intent = intent
-        val x = database.rawQuery(
-            "SELECT * FROM Students WHERE id = \"${intent.getStringExtra("id")}\"",
-            null
-        )
+        val x = Globals.selectGradesFromStudents(this, intent.getStringExtra("id"))
         x.moveToFirst()
         studentName.setText(x.getString(x.getColumnIndex("name")))
         motherName.setText(x.getString(x.getColumnIndex("mother")))
@@ -30,27 +26,17 @@ class ModifyStudentActivity : AppCompatActivity() {
 
     fun modify(view: View) {
         try {
-            val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
             val studName: String = studentName.text.toString()
             val birth: String = dateofBirth.text.toString()
             val mother: String = motherName.text.toString()
-            val sql = "UPDATE Students SET name = ?, mother = ?, birth = ? WHERE id = ?"
-            val statement = database.compileStatement(sql)
-            statement.bindString(1, studName)
-            statement.bindString(2, mother)
-            statement.bindString(3, birth)
-            statement.bindString(4, id.toString())
 
-            var checkExist = "SELECT * FROM Students"
-
-            checkExist += " WHERE name = \"$studName\" AND birth = \"$birth\" AND mother = \"$mother\""
-            val cursor = database.rawQuery(checkExist, null)
+            val cursor = Globals.selectIdStudent(this, studName, mother, birth)
             var redundant = false
             if (cursor.count != 0) {
                 redundant = true
             }
             if (studentName.text.toString() != "" && motherName.text.toString() != "" && dateofBirth.text.toString() != "" && !redundant) {
-                statement.execute()
+                Globals.updateStudent(this, studName, mother, birth, id.toString())
             }
             cursor.close()
             val intent = Intent(applicationContext, StudentLister::class.java)
@@ -62,11 +48,7 @@ class ModifyStudentActivity : AppCompatActivity() {
 
     fun delete(view: View) {
         try {
-            val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
-            val sql = "DELETE FROM Students WHERE id = ?"
-            val statement = database.compileStatement(sql)
-            statement.bindString(1, id.toString())
-            statement.execute()
+            Globals.deleteStudent(this, id.toString())
         } catch (e: Exception) {
             e.printStackTrace()
         }
