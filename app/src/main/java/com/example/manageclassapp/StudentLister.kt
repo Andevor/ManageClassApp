@@ -100,20 +100,22 @@ class StudentLister : AppCompatActivity() {
     fun random(view: View) {
         val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
         val sintent = Intent(applicationContext, GradeListerActivity::class.java)
-        val r = Random.nextInt(0, studentNameArray.count())
-        val temp = studentNameArray[r].split(" - ")
-        sintent.putExtra("sname", temp[0])
-        sintent.putExtra("smother", temp[1])
-        sintent.putExtra("sbirth", temp[2])
-        sintent.putExtra("class", textView.text.toString())
-        val query =
-            "SELECT id FROM Students WHERE name=\"${temp[0]}\" AND mother=\"${temp[1]}\" AND birth=\"${temp[2]}\""
-        val cursor = database.rawQuery(query, null)
-        cursor.moveToFirst()
-        Globals.selectedStudentId = cursor.getInt(cursor.getColumnIndex("id")).toString()
-        Globals.selectedStudent = temp[0]
-        cursor.close()
-        startActivity(sintent)
+        if(studentNameArray.count() != 0) {
+            val r = Random.nextInt(0, studentNameArray.count())
+            val temp = studentNameArray[r].split(" - ")
+            sintent.putExtra("sname", temp[0])
+            sintent.putExtra("smother", temp[1])
+            sintent.putExtra("sbirth", temp[2])
+            sintent.putExtra("class", textView.text.toString())
+            val query =
+                "SELECT id FROM Students WHERE name=\"${temp[0]}\" AND mother=\"${temp[1]}\" AND birth=\"${temp[2]}\""
+            val cursor = database.rawQuery(query, null)
+            cursor.moveToFirst()
+            Globals.selectedStudentId = cursor.getInt(cursor.getColumnIndex("id")).toString()
+            Globals.selectedStudent = temp[0]
+            cursor.close()
+            startActivity(sintent)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
