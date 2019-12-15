@@ -1,16 +1,14 @@
 package com.example.manageclassapp
 
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_grade_lister.*
-import java.lang.Exception
 
 class GradeListerActivity : AppCompatActivity() {
 
@@ -18,7 +16,6 @@ class GradeListerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grade_lister)
 
-        val database = this.openOrCreateDatabase("Class", Context.MODE_PRIVATE, null)
         val intent = intent
         if (intent.getStringExtra("sname") == "") {
             StudentName.text = intent.getStringExtra("sname")
@@ -33,8 +30,7 @@ class GradeListerActivity : AppCompatActivity() {
             ArrayAdapter(this, android.R.layout.simple_list_item_1, gradeArray)
         GradeList.adapter = arrayAdapter
         try {
-            val gradeq = "SELECT * FROM Grades WHERE student=\"${Globals.selectedStudentId}\""
-            val grades = database.rawQuery(gradeq, null)
+            val grades = Globals.selectGrades(this)
             grades.moveToFirst()
 
             while (grades != null) {
@@ -51,7 +47,7 @@ class GradeListerActivity : AppCompatActivity() {
                 arrayAdapter.notifyDataSetChanged()
             }
 
-            grades?.close()
+            grades.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }
